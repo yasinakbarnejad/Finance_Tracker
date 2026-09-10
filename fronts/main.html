@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block head %}        
+    <link rel="stylesheet" href="/static/main.css">
+    <title>
+        Finance Manager
+    </title>
+{% endblock %}
+{% block content %}
+    <div class="Title">
+        <h1>
+            DASHBOARD
+        </h1>
+    </div>
+    {% if user %}
+    <div class="Dash">
+        <h4>
+            First name : {{user.first}}
+        </h4>
+        <h4>
+            Last Name : {{user.last}}
+        </h4>
+        <h4>
+            Net worth : {{user.net_worth}}
+        </h4>
+    </div>
+    {%endif%}
+    <div class="main">
+    <div class="Expense">
+    <form>
+        <label for="num">Choose Amount:</label><br>
+        <input id="num" type="number" name="amount" placeholder="in Toman" required><br>
+        <label for="catagory">Choose a catagory</label><br>
+        <select id="catagory">
+            <option value="internet">Internet</option>
+            <option value="transportation">Transportation</option>
+
+        </select><br>
+        <input type="date" name="date"><br>
+
+    </form>
+        <button id="income">
+            Add expense
+        </button>
+    </div>
+    <div class="Income">
+    <form action="/income" method="post">
+        <label for="num">Choose Amount:</label><br>
+        <input id="num" type="number" name="amount" placeholder="in Toman" required><br>
+        <label for="catagory">Choose a catagory</label><br>
+        <select id="catagory" name="catagory">
+            <option value="dad">Dad allowance</option>
+            <option value="mom">Mom gift</option>
+            <option value="work">Salary</option>
+        </select><br>
+        <input type="date" name="date"><br>
+        <button type="submit" id="income">
+            Add Income
+        </button>
+    </form>
+    </div>
+    </div>
+{% endblock %}

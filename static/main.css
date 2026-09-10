@@ -1,0 +1,72 @@
+.Title {
+    text-align: center;
+    color: blue;
+}
+body {
+    background-color: black;
+    margin: 0;
+    padding: 0;
+}
+.Menu {
+    color:white;
+    background-color: grey;
+    width: 100%;
+    display: flex;
+}
+.Expense {
+    text-align: center;
+    flex:1;
+    background-color: red;
+    width: 50%;
+    height: 100vh;
+}
+.Income {
+    text-align: center;
+    flex:1;
+    background-color: green;
+    width: 50%;
+    height: 100vh;
+    margin-left: auto;
+}
+.main {
+        display: flex;
+}
+h3 {
+    display:inline-flex;
+    padding-right: 50px;
+}
+h4 {
+    color: white;
+}
+.menu {
+    color: white;
+}
+.Dash {
+    color: blueviolet;
+    display: flex;
+    justify-content: space-between;
+}
+.link {
+    color: wheat;
+}
+label {
+    color: wheat;
+    padding-right: 50px;
+    font-size: 17px;
+}
+button{
+    width: 160px;
+    height: 40px;
+}
+input {
+    width: 160px;
+}
+select {
+    width: 160px;
+}
+#first {
+    padding-left: 10px;
+}
+#sign {
+    margin-left: auto;
+}

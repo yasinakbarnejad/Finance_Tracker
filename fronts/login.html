@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            login
+        </title>
+    </head>
+    <body>
+        <h1>
+            LOG IN
+        </h1>
+        <div class="fields">
+            <form action="/login" method="post">
+            <label for="username"></label>
+            <input type="text" name="username" placeholder="Your Username..." id="username" required>
+            <label for="password"></label>
+            <input type="text" name="password" placeholder="Your Password..." id="password" required>
+            <button type="submit">
+                Submit
+            </button><br>
+            </form> 
+        </div>
+        <p>don't have account yet?<a href="/signup">make one</a></p>
+        {% if error %}
+            <p style="color: red;">{{error}}</p>
+        {% endif %}
+    </body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {% block head %}
+        <link rel="stylesheet" href="/static/main.css">
+        <title>
+            Finance Manager
+        </title>
+        {% endblock %}
+    </head>
+
+    <body>
+        <div class="Menu">
+            <a class="menu" href="/home">
+            <h3 id="first">
+                Home
+            </h3>
+            </a>
+            <h3>
+                Report
+            </h3>
+            <h3>
+                Investment
+            </h3>
+            <a class="menu" href="/contact">
+                <h3>
+                    Contact Us
+                </h3>
+            </a>
+            </h3>
+            {% if user %}
+                <div id="sign">
+                <h3>
+                    {{user.first}}
+                </h3>
+                </div>
+            {% else %}
+            <div id="sign">
+            <a class="menu" href="\login">
+                <h3>
+                    log in
+                </h3>
+            </a>
+            <a class="menu" href="\signup">
+                <h3>
+                    sign up
+                </h3>
+            </a>
+            </div>
+            {% endif %}
+        </div>
+    {% block content %}
+    <!-- default content goes here -->
+    {% endblock %}
+    </body>
+</html>
