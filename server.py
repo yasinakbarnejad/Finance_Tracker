@@ -6,7 +6,7 @@ import uvicorn
 from user import User
 from intraction import investment, transaction
 from fastapi.staticfiles import StaticFiles
-
+import jdatetime
 
 fronts = Jinja2Templates(directory="fronts")
 app = fastapi.FastAPI()
@@ -45,7 +45,42 @@ def signup_page(request: fastapi.Request, error: str | None = None):
     return fronts.TemplateResponse(
         request,"signup.html", {"user": None, "error": error}
     )
+@app.post("/income")
+def income(request:fastapi.Request,
+          amount: int = fastapi.Form(...),
+          catagory: str = fastapi.Form(...),
+          date: str = fastapi.Form(...)):
     
+    year, month, day = map(int, date.split("/"))
+    jalali_date = jdatetime.date(year, month, day)
+    gregorian_date = jalali_date.togregorian()
+    
+    try:
+        new_trans = transaction(amount, catagory,1, gregorian_date)
+    except Exception as e:
+        return fronts.TemplateResponse(request,"main.html", {"request":request, "error":repr(e)})
+    if not main_user:
+        return fronts.TemplateResponse(request,"main.html", {"request":request, "error": "no users logged in"})
+    main_user.action(new_trans)
+    return fronts.TemplateResponse(request,"main.html", {"request":request, "user":main_user})
+@app.post("/expense")
+def expense(request:fastapi.Request,
+          amount: int = fastapi.Form(...),
+          catagory: str = fastapi.Form(...),
+          date: str = fastapi.Form(...)):
+    
+    year, month, day = map(int, date.split("/"))
+    jalali_date = jdatetime.date(year, month, day)
+    gregorian_date = jalali_date.togregorian()
+    
+    try:
+        new_trans = transaction(amount, catagory,-1, gregorian_date)
+    except Exception as e:
+        return fronts.TemplateResponse(request,"main.html", {"request":request, "error":repr(e)})
+    if not main_user:
+        return fronts.TemplateResponse(request,"main.html", {"request":request, "error": "no users logged in"})
+    main_user.action(new_trans)
+    return fronts.TemplateResponse(request,"main.html", {"request":request, "user":main_user})
 @app.post("/login")
 def login(request:fastapi.Request,
           username: str = fastapi.Form(...),
@@ -77,7 +112,7 @@ def signup(request:fastapi.Request,
     if user:
         return fronts.TemplateResponse(request,"signup.html", {"request":request, "error":"user already exists"})
     if password != repassword:
-        return fronts.TemplateResponse(request,"login.html", {"request":request, "error":"passwords dont match"})
+        return fronts.TemplateResponse(request,"signup.html", {"request":request, "error":"passwords dont match"})
     
     global main_user
     main_user = User(fname,sname,username,password,net_worth)

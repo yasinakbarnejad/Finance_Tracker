@@ -26,7 +26,7 @@ class User:
             investment.calculate()
     def action(self,new_action:transaction):
         self.net_worth += new_action.type*new_action.amount
-        
+        new_action.add_to_file()
     def login(self):
         self.calculate_investment()
         self.last_login = date.today()

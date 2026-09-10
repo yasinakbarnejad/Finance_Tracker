@@ -2,6 +2,12 @@
 
 {% block head %}        
     <link rel="stylesheet" href="/static/main.css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
     <title>
         Finance Manager
     </title>
@@ -27,21 +33,21 @@
     {%endif%}
     <div class="main">
     <div class="Expense">
-    <form>
+    <form action="/expense" method="post">
         <label for="num">Choose Amount:</label><br>
         <input id="num" type="number" name="amount" placeholder="in Toman" required><br>
         <label for="catagory">Choose a catagory</label><br>
-        <select id="catagory">
+        <select name="catagory" id="catagory">
             <option value="internet">Internet</option>
             <option value="transportation">Transportation</option>
 
         </select><br>
         <input type="date" name="date"><br>
-
-    </form>
-        <button id="income">
+        <button type="submit" id="income">
             Add expense
         </button>
+    </form>
+
     </div>
     <div class="Income">
     <form action="/income" method="post">
@@ -53,7 +59,16 @@
             <option value="mom">Mom gift</option>
             <option value="work">Salary</option>
         </select><br>
-        <input type="date" name="date"><br>
+        <script>
+            $(document).ready(function () {
+                $("#date").pDatepicker({
+                    format: "YYYY/MM/DD",
+                    autoClose: true
+                });
+            });
+        </script>
+
+        <input type="text" id="date" name="date" autocomplete="off">
         <button type="submit" id="income">
             Add Income
         </button>
