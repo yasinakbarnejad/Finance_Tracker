@@ -1,6 +1,5 @@
 from datetime import date
 from intraction import transaction
-import pandas as pd
 import json
 class User:
     address = "data/users.json"
@@ -12,7 +11,9 @@ class User:
         self.net_worth = net_worth
         self.investments = []
         self.last_login = date.today()
-        self.db_address = f"{self.last}_actions.csv"
+        self.db_address = f"data/trans/{self.last}_actions.csv"
+        self.Icatagories = ["dad allowance", "mom gift", "salary"]
+        self.Ecatagories = ["internet", "transportation"]
     def add_investment(self, new_investment):
         self.investments.append(new_investment)
     def check_investments(self):
@@ -24,9 +25,15 @@ class User:
     def calculate_investment(self):
         for investment in self.investments:
             investment.calculate()
+    def add_catagory(self, new_catagory, type):
+        if type==1:
+            self.Icatagories.append(new_catagory)
+        else:
+            self.Ecatagories.append(new_catagory)
     def action(self,new_action:transaction):
         self.net_worth += new_action.type*new_action.amount
-        new_action.add_to_file()
+        new_action.add_to_file(self.db_address)
+        self.add_file()
     def login(self):
         self.calculate_investment()
         self.last_login = date.today()
@@ -61,12 +68,11 @@ class User:
         except FileNotFoundError:
             old_dict = {"users":[]}
             users = []
-        
+        if old_user :=self.find_user():
+            users.remove(old_user)
         users.append(new_user)
         old_dict["users"] = users
         with open(User.address, "w") as f:
             json.dump(old_dict,f, indent=4)
-        
-    def read_file(self):
-        df = pd.read_csv(self.db_address)
-        return df   
+    def make_report(self):
+        pass

@@ -20,19 +20,18 @@ class transaction:
         else:
             self.type =type
     def add_to_file(self, address):
-        df = pd.read_csv(address)
-        dictionary = {"id":1,"type": self.type, "amount": self.amount,"year":self.date.year, "month":self.date.month,"day":self.date.day}
+        dictionary = {"date":1 ,"type": self.type, "amount": self.amount,"year":self.year, "month":self.month,"date":self.date, "catagory": self.catagory}
         try:
-            with open(address, "a") as file:
+            with open(address,"r",newline='') as file:
                 row_count = sum(1 for _ in file)
                 dictionary["id"]= row_count
-                writer = csv.DictWriter(file, fieldnames=dictionary.keys())
-                writer.writerow(dictionary)
         except FileNotFoundError:
-            with open(address, "w") as file:
-                writer = csv.DictWriter(file, fieldnames=dictionary.keys())
+            dictionary["id"]= 0
+        with open(address, "a",newline='') as file:
+            writer = csv.DictWriter(file, fieldnames=dictionary.keys())
+            if dictionary["id"]==0:
                 writer.writeheader()
-                writer.writerow(dictionary)
+            writer.writerow(dictionary)
 class investment:
     def __init__(self,stocks, bought_price):
         self.stocks = stocks
