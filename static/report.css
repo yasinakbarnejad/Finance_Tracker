@@ -1,0 +1,92 @@
+.Title {
+    text-align: center;
+    color: blue;
+}
+body {
+    background-color: black;
+    margin: 0;
+    padding: 0;
+}
+.Menu {
+    color:white;
+    background-color: grey;
+    width: 100%;
+    display: flex;
+}
+#net_worth {
+    color: chocolate;
+}
+.main {
+        display: flex;
+}
+h3 {
+    display:inline-flex;
+    padding-right: 50px;
+}
+h4 {
+    color: white;
+}
+.menu {
+    color: white;
+}
+.Dash {
+    color: blueviolet;
+    display: flex;
+    justify-content: space-between;
+}
+.link {
+    color: wheat;
+}
+.selection {
+    background-color: burlywood;
+    width: 100%;
+    margin: 0;
+    padding-top: 1px;
+    height: 40px;
+    display: flex;
+}
+.month {
+    display: flex;
+    color: black;
+    align-items: center;
+    padding-left: 30px;
+    gap: 35px;
+    flex-wrap: wrap;
+    padding-top: 6px;
+}
+.month form #months{
+    margin-left: 30px;
+}
+.selector {
+    display: flex;
+    color: black;
+    margin: 0;
+    align-items: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    padding-top: 6px;
+    margin-left: 8px;
+}
+.selector form label {
+    margin-left: 20px;
+  }
+.selector form .field {
+    display: flex;
+    align-items: center;
+  }
+.selection #button{
+    margin-left: 30px;
+}
+button{
+    width: 160px;
+    height: 40px;
+}
+select {
+    width: 160px;
+}
+#first {
+    padding-left: 10px;
+}
+#sign {
+    margin-left: auto;
+}

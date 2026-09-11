@@ -34,6 +34,14 @@ def contact_page(request: fastapi.Request, error: str | None = None):
         "request" : request,
         "user" : main_user
     })
+@app.get("/report", response_class=HTMLResponse)
+def report_page(request: fastapi.Request, error: str | None = None):
+    return fronts.TemplateResponse(request,"report.html",
+    {
+        "request" : request,
+        "user" : main_user,
+        "type" : 0
+    })
 @app.get("/login", response_class=HTMLResponse)
 def login_page(request: fastapi.Request, error: str | None = None):
     return fronts.TemplateResponse(
@@ -45,6 +53,18 @@ def signup_page(request: fastapi.Request, error: str | None = None):
     return fronts.TemplateResponse(
         request,"signup.html", {"user": None, "error": error}
     )
+    
+@app.post("/select", response_class=HTMLResponse)
+def select_report_type(
+    request:fastapi.Request,
+    type: str= fastapi.Form(...)):
+    if not type:
+        type_num = 0 
+    else:
+        type_num = int(type)
+    return fronts.TemplateResponse(request,"report.html", {"request":request, "user":main_user, "type" : type_num})
+
+
 @app.post("/income")
 def income(request:fastapi.Request,
           amount: int = fastapi.Form(...),
@@ -56,7 +76,7 @@ def income(request:fastapi.Request,
     gregorian_date = jalali_date.togregorian()
     
     try:
-        new_trans = transaction(amount, catagory,1, gregorian_date)
+        new_trans = transaction(amount, catagory,1, gregorian_date, month,year)
     except Exception as e:
         return fronts.TemplateResponse(request,"main.html", {"request":request, "error":repr(e)})
     if not main_user:

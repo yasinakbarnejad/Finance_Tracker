@@ -42,7 +42,16 @@
             <option value="transportation">Transportation</option>
 
         </select><br>
-        <input type="date" name="date"><br>
+        <script>
+            $(document).ready(function () {
+                $("#date").pDatepicker({
+                    format: "YYYY/MM/DD",
+                    autoClose: true
+                });
+            });
+        </script>
+
+        <input type="text" id="date" name="date" autocomplete="off"><br>
         <button type="submit" id="income">
             Add expense
         </button>
@@ -59,20 +68,18 @@
             <option value="mom">Mom gift</option>
             <option value="work">Salary</option>
         </select><br>
-        <script>
-            $(document).ready(function () {
-                $("#date").pDatepicker({
-                    format: "YYYY/MM/DD",
-                    autoClose: true
-                });
-            });
-        </script>
 
-        <input type="text" id="date" name="date" autocomplete="off">
+
+        <input type="text" id="date" name="date2" autocomplete="off"><br>
         <button type="submit" id="income">
             Add Income
         </button>
     </form>
     </div>
     </div>
+    {% if error%}
+    <h1 style="color: red;">
+        {{error}}
+    </h1>
+    {%endif%}
 {% endblock %}
