@@ -1,12 +1,13 @@
 import fastapi
 from datetime import datetime
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse, RedirectResponse 
+from fastapi.responses import HTMLResponse, RedirectResponse , JSONResponse
 import uvicorn
+from fastapi.encoders import jsonable_encoder
 from user import User
 from intraction import investment, transaction
 from fastapi.staticfiles import StaticFiles
-import jdatetime
+import util
 
 fronts = Jinja2Templates(directory="fronts")
 app = fastapi.FastAPI()
@@ -72,8 +73,7 @@ def income(request:fastapi.Request,
           date: str = fastapi.Form(...)):
     
     year, month, day = map(int, date.split("/"))
-    jalali_date = jdatetime.date(year, month, day)
-    gregorian_date = jalali_date.togregorian()
+    gregorian_date = util.date_convertor(date)
     
     try:
         new_trans = transaction(amount, catagory,1, gregorian_date, month,year)
@@ -90,11 +90,10 @@ def expense(request:fastapi.Request,
           date: str = fastapi.Form(...)):
     
     year, month, day = map(int, date.split("/"))
-    jalali_date = jdatetime.date(year, month, day)
-    gregorian_date = jalali_date.togregorian()
+    gregorian_date = util.date_convertor(date)
     
     try:
-        new_trans = transaction(amount, catagory,-1, gregorian_date)
+        new_trans = transaction(amount, catagory,-1, gregorian_date, month, year)
     except Exception as e:
         return fronts.TemplateResponse(request,"main.html", {"request":request, "error":repr(e)})
     if not main_user:
@@ -109,15 +108,85 @@ def login(request:fastapi.Request,
         return fronts.TemplateResponse(request,"login.html", {"request":request, "error":"invalid input"})
     user = User.find_user(username)
     if not user:
-        print("not found")
         return fronts.TemplateResponse(request,"login.html", {"request":request, "error":"user is not found"})
     if user.password != password:
-        print("wrong pass")
         return fronts.TemplateResponse(request,"login.html", {"request":request, "error":"password is wrong"})
     global main_user
     main_user = user
     return RedirectResponse("/home", status_code=303)
-
+@app.post("/api/monthlychart")
+def get_monthly_chart(request:fastapi.Request,
+          months: str = fastapi.Form(...)):
+    month_num= int(months)
+    if not main_user:
+            return fronts.TemplateResponse(request,"main.html", {"request":request, "error": "no users logged in"})
+    report = main_user.make_report(1,month=month_num)
+    return fronts.TemplateResponse(
+    request,
+    "report.html",
+    {
+        "request": request,
+        "chart1": report.first.to_html(
+            full_html=False,
+            include_plotlyjs=True
+        ),
+        "chart2": report.second.to_html(
+            full_html=False,
+            include_plotlyjs=True
+        ),
+        "chart3": report.third.to_html(
+            full_html=False,
+            include_plotlyjs=True
+        ),
+        "user": main_user
+    }
+)
+@app.post("/api/annualchart")
+def get_monthly_chart(request:fastapi.Request,
+          year: str = fastapi.Form(...)):
+    year_num= int(year)
+    if not main_user:
+            return fronts.TemplateResponse(request,"main.html", {"request":request, "error": "no users logged in"})
+    report = main_user.make_report(2,year=year_num)
+    return fronts.TemplateResponse(
+    request,
+    "report.html",
+    {
+        "request": request,
+        "chart1": report.first.to_html(
+            full_html=False,
+            include_plotlyjs=True
+        ),
+        "chart2": report.second.to_html(
+            full_html=False,
+            include_plotlyjs=True
+        ),
+        "chart3": report.third.to_html(
+            full_html=False,
+            include_plotlyjs=True
+        ),
+        "user": main_user
+    }
+)
+@app.post("/api/netchart")
+def get_monthly_chart(request:fastapi.Request,
+          date: str = fastapi.Form(...)):
+    if not main_user:
+            return fronts.TemplateResponse(request,"main.html", {"request":request, "error": "no users logged in"})
+    gdate = util.date_convertor(date)
+    report = main_user.make_report(3,date=gdate,net_worth=main_user.net_worth)
+    return fronts.TemplateResponse(
+    request,
+    "report.html",
+    {
+        "request": request,
+        "chart1": report.first.to_html(
+            full_html=False,
+            include_plotlyjs=True
+        ),
+        "user":main_user
+    }
+)
 @app.post("/signup")
 def signup(request:fastapi.Request,
           fname: str = fastapi.Form(...),

@@ -44,14 +44,14 @@
         </select><br>
         <script>
             $(document).ready(function () {
-                $("#date").pDatepicker({
+                $(".date").pDatepicker({
                     format: "YYYY/MM/DD",
                     autoClose: true
                 });
             });
         </script>
 
-        <input type="text" id="date" name="date" autocomplete="off"><br>
+        <input type="text" class="date" name="date" autocomplete="off"><br>
         <button type="submit" id="income">
             Add expense
         </button>
@@ -70,7 +70,7 @@
         </select><br>
 
 
-        <input type="text" id="date" name="date2" autocomplete="off"><br>
+        <input type="text" class="date" name="date" autocomplete="off"><br>
         <button type="submit" id="income">
             Add Income
         </button>

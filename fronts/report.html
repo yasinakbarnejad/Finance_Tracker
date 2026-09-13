@@ -5,6 +5,13 @@
     <title>
         Finance Report
     </title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+
 {% endblock %}
 {% block content %}
 <div class="selection">
@@ -19,9 +26,9 @@
     </div>
     {% if type==1 %}
     <div class="month">
-    <form>
+    <form action="/api/monthlychart" method="post">
         <label for="months">Month:</label>
-        <select id="months" name="month">
+        <select id="months" name="months">
             <option value="1">farvardin</option>
             <option value="2">Ordibehesht</option>
             <option value="3">Khordad</option>
@@ -40,28 +47,34 @@
     </form>
     </div>
     {% elif type==2 %}
-    <form>
-        <select>
-            <option value="0">all</option>
-            <option value="1">dad allowance</option>
-            <option value="2">mom gift</option>
-            <option value="3">internet</option>
-            <output value="4"></output>
-        </select>
+    <form action="/api/annualchart" method="post">
+        <input type="number" name="year" id="year">
+        <input type="submit" value="Submit" id="button">
     </form>
     {%elif type==3 %}
-    <form>
+    <form action="/api/netchart" method="post">
         <script>
-            $(document).ready(function () {
-                $("#date").pDatepicker({
-                    format: "YYYY/MM/DD",
-                    autoClose: true
-                });
+        $(document).ready(function () {
+            $("#date").pDatepicker({
+                format: "YYYY/MM/DD",
+                autoClose: true
             });
+        });
         </script>
-
         <input type="text" id="date" name="date" autocomplete="off">
+        <input type="submit" value="Submit" id="button">
     </form>
     {% endif %}
+</div>
+<div class="reports">
+    <div id="first_chart">
+        {{ chart1 | safe}}
+    </div>
+    <div id="second_chart">
+        {{ chart2 | safe }}
+    </div>
+    <div id="third_chart">
+        {{ chart3 | safe}}
+    </div>
 </div>
 {% endblock %}

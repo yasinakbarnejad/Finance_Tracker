@@ -1,6 +1,7 @@
 from datetime import date
 from intraction import transaction
 import json
+import report
 class User:
     address = "data/users.json"
     def __init__(self, first_name, last_name,username, password,net_worth):
@@ -11,7 +12,7 @@ class User:
         self.net_worth = net_worth
         self.investments = []
         self.last_login = date.today()
-        self.db_address = f"data/trans/{self.last}_actions.csv"
+        self.db_address = f"data/trans/{self.username}_actions.csv"
         self.Icatagories = ["dad allowance", "mom gift", "salary"]
         self.Ecatagories = ["internet", "transportation"]
     def add_investment(self, new_investment):
@@ -39,7 +40,7 @@ class User:
         self.last_login = date.today()
     
     @classmethod
-    def find_user(cls, username):
+    def find_user_dict(cls, username):
         try:
             with open(cls.address,"r") as f:
                 users =  json.load(f)["users"]
@@ -49,9 +50,13 @@ class User:
             return {}
         for user in users:
             if user["username"]==username:
-                return User.read_dict(user) 
+                return user 
         else:
             return {} 
+    @classmethod
+    def find_user(cls, username):
+        if user:=User.find_user_dict(username):
+            return User.read_dict(user)
     @staticmethod
     def read_dict(user_dict):
         new_user = User(user_dict["first_name"],user_dict["last_name"],user_dict["username"],
@@ -68,11 +73,17 @@ class User:
         except FileNotFoundError:
             old_dict = {"users":[]}
             users = []
-        if old_user :=self.find_user():
+        if old_user :=self.find_user_dict(self.username):
             users.remove(old_user)
         users.append(new_user)
         old_dict["users"] = users
         with open(User.address, "w") as f:
             json.dump(old_dict,f, indent=4)
-    def make_report(self):
-        pass
+    def make_report(self, rtype, **kwrg):
+        if rtype==1:
+            return report.Monthly(address=self.db_address,**kwrg)
+        elif rtype==2:
+            return report.Annual(address=self.db_address,**kwrg)
+        elif rtype==3:
+            return report.Net(address=self.db_address,**kwrg)
+

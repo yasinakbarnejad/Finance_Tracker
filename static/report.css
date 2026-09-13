@@ -77,6 +77,13 @@ h4 {
 .selection #button{
     margin-left: 30px;
 }
+.reports {
+    background-color: aqua;
+
+}
+.reports #first_chart {
+    background-color: beige;
+}
 button{
     width: 160px;
     height: 40px;
