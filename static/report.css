@@ -97,3 +97,28 @@ select {
 #sign {
     margin-left: auto;
 }
+.investments{
+    display: flex;
+    flex-wrap: wrap;
+     gap: 16px;
+}
+.card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 16px;
+      width: 220px;
+}
+.controls { display: flex; gap: 6px; margin-top: 10px; align-items: center; }
+.controls input {
+    width: 60px;
+    padding: 4px 6px;
+    text-align: center;
+}
+.controls button { 
+    padding: 6px 10px; 
+    cursor: pointer; 
+    border-radius: 4px; 
+    border: 1px solid #888; 
+}
+.buy  { background: #d4f7d4; }
+.sell { background: #f7d4d4; }

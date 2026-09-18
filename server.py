@@ -5,9 +5,10 @@ from fastapi.responses import HTMLResponse, RedirectResponse , JSONResponse
 import uvicorn
 from fastapi.encoders import jsonable_encoder
 from user import User
-from intraction import investment, transaction
+from intraction import transaction
 from fastapi.staticfiles import StaticFiles
 import util
+from investment import Investment
 
 fronts = Jinja2Templates(directory="fronts")
 app = fastapi.FastAPI()
@@ -48,7 +49,11 @@ def login_page(request: fastapi.Request, error: str | None = None):
     return fronts.TemplateResponse(
         request,"login.html", {"user": None, "error": error}
     )
-    
+@app.get("/investment", response_class=HTMLResponse)
+def investment_page(request: fastapi.Request, error: str | None = None):
+    return fronts.TemplateResponse(
+        request,"investment.html", {"request":request,"user": main_user,"error":error}
+    )  
 @app.get("/signup", response_class=HTMLResponse)
 def signup_page(request: fastapi.Request, error: str | None = None):
     return fronts.TemplateResponse(
@@ -64,7 +69,38 @@ def select_report_type(
     else:
         type_num = int(type)
     return fronts.TemplateResponse(request,"report.html", {"request":request, "user":main_user, "type" : type_num})
+@app.post("/investment/investments", response_class=HTMLResponse)
+def search(
+    request: fastapi.Request,
+    investment: str = fastapi.Form(...)
+):
+    Investment.fetch()
+    limit = 10
+    matches = Investment.search_investment(investment)
+    print(matches)
 
+    if len(matches)>limit:
+        return fronts.TemplateResponse(request,"investment.html", {
+            "request":request,
+            "user":main_user,
+            "error":"Please be more specific",
+            "investments":[]
+            })
+    resualt = []
+    for investment_block in matches:
+        bought= next((invest for invest in main_user.investments if investment_block["name"]==invest.name),None)
+        if bought==None:
+            bought = Investment(investment_block["name"])
+        print(type(investment_block))
+        bought.find_price(investment_block.get("cancelNav",-1))
+        resualt.append(bought)
+    print(resualt)
+    return  fronts.TemplateResponse(request,"investment.html", {
+                "request":request,
+                "user":main_user,
+                "error": "",
+                "investments":resualt
+                })
 
 @app.post("/income")
 def income(request:fastapi.Request,

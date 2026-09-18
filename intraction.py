@@ -32,8 +32,3 @@ class transaction:
             if dictionary["id"]==0:
                 writer.writeheader()
             writer.writerow(dictionary)
-class investment:
-    def __init__(self,stocks, bought_price):
-        self.stocks = stocks
-        self.bought_price = bought_price
-        

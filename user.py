@@ -2,6 +2,7 @@ from datetime import date
 from intraction import transaction
 import json
 import report
+from investment import Investment
 class User:
     address = "data/users.json"
     def __init__(self, first_name, last_name,username, password,net_worth):
@@ -9,23 +10,21 @@ class User:
         self.last = last_name
         self.username = username
         self.password = password
-        self.net_worth = net_worth
-        self.investments = []
+        self.liquid = net_worth
+        self.net_worth = self.liquid
+        self.investments:list[Investment] = []
         self.last_login = date.today()
         self.db_address = f"data/trans/{self.username}_actions.csv"
         self.Icatagories = ["dad allowance", "mom gift", "salary"]
         self.Ecatagories = ["internet", "transportation"]
-    def add_investment(self, new_investment):
+    def add_investment(self, new_investment:Investment):
         self.investments.append(new_investment)
     def check_investments(self):
         new_list = []
         for investment in self.investments:
-            if not investment.check_empty():
+            if not investment.is_empty():
                 new_list.append(investment)
         self.investments = new_list
-    def calculate_investment(self):
-        for investment in self.investments:
-            investment.calculate()
     def add_catagory(self, new_catagory, type):
         if type==1:
             self.Icatagories.append(new_catagory)
@@ -36,9 +35,7 @@ class User:
         new_action.add_to_file(self.db_address)
         self.add_file()
     def login(self):
-        self.calculate_investment()
         self.last_login = date.today()
-    
     @classmethod
     def find_user_dict(cls, username):
         try:

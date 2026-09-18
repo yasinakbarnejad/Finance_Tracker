@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block head %}        
+    <link rel="stylesheet" href="/static/report.css">
+    <title>
+        INVESTMENTS
+    </title>
+{% endblock %}
+{% block content%}
+<div class="selection">
+    <div class="selector">
+    <form action="/investment/investments" method="post">
+        <span>Search your desired investment</span>    
+        <span><label for="investment">Name</label> <input type="text" id="investment" name="investment"></span>
+        <input type="submit" value="Submit" id="button">
+    </form>
+    </div>
+</div>
+<div class="investments">
+{% for item in investments %}
+
+<div class="card">
+    <h2>{{ item.name }}</h2>
+    <p><strong>Price:</strong> ${{ item.price }}</p>
+    <p><strong>Stock:</strong> {{ item.stock }}</p>
+    <p><strong>Value:</strong> ${{ item.value }}</p>
+</div>
+<div class="controls">
+<form method="POST" action="/trade">
+  <input type="hidden" name="name" value="{{ item.name }}">
+  <input type="number" name="amount" min="1" max="{{ item.stock }}" value="1">
+  <button name="action" value="buy">Buy</button>
+  <button name="action" value="sell">Sell</button>
+</form>
+</div>
+{% endfor %}
+</div>
+{% endblock%}
