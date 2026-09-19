@@ -29,8 +29,8 @@
 <form method="POST" action="/trade">
   <input type="hidden" name="name" value="{{ item.name }}">
   <input type="number" name="amount" min="1" max="{{ item.stock }}" value="1">
-  <button name="action" value="buy">Buy</button>
-  <button name="action" value="sell">Sell</button>
+  <button name="action" value="1">Buy</button>
+  <button name="action" value="-1">Sell</button>
 </form>
 </div>
 {% endfor %}

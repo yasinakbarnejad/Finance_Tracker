@@ -40,7 +40,11 @@
         <select name="catagory" id="catagory">
             <option value="internet">Internet</option>
             <option value="transportation">Transportation</option>
-
+            {% if user %}
+            {% for category in user.Ecatagories %}
+            <option value="{{category}}">{{ category}}</option>
+            {%endfor%}
+            {%endif%}
         </select><br>
         <script>
             $(document).ready(function () {
@@ -64,9 +68,14 @@
         <input id="num" type="number" name="amount" placeholder="in Toman" required><br>
         <label for="catagory">Choose a catagory</label><br>
         <select id="catagory" name="catagory">
-            <option value="dad">Dad allowance</option>
-            <option value="mom">Mom gift</option>
-            <option value="work">Salary</option>
+            <option value="dad allowance">Dad allowance</option>
+            <option value="mom gift">Mom gift</option>
+            <option value="salary">Salary</option>
+            {% if user %}
+            {% for category in user.Ecatagories %}
+            <option value="{{category}}">{{ category}}</option>
+            {%endfor%}
+            {%endif%}
         </select><br>
 
 

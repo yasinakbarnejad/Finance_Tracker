@@ -1,5 +1,6 @@
 import fastapi
 from datetime import datetime
+import datetime
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse , JSONResponse
 import uvicorn
@@ -59,7 +60,11 @@ def signup_page(request: fastapi.Request, error: str | None = None):
     return fronts.TemplateResponse(
         request,"signup.html", {"user": None, "error": error}
     )
-    
+@app.get("/setting", response_class=HTMLResponse)
+def setting_page(request: fastapi.Request, error: str | None = None):
+    return fronts.TemplateResponse(
+        request,"setting.html", {"user": main_user, "error": error}
+    )
 @app.post("/select", response_class=HTMLResponse)
 def select_report_type(
     request:fastapi.Request,
@@ -77,7 +82,6 @@ def search(
     Investment.fetch()
     limit = 10
     matches = Investment.search_investment(investment)
-    print(matches)
 
     if len(matches)>limit:
         return fronts.TemplateResponse(request,"investment.html", {
@@ -101,7 +105,30 @@ def search(
                 "error": "",
                 "investments":resualt
                 })
-
+@app.post("/save")
+def save(request:fastapi.Request,
+          ctype: int = fastapi.Form(...),
+          catagory: str = fastapi.Form(...)):
+    main_user.add_catagory(catagory,ctype)
+@app.post("/trade")
+def trade(request:fastapi.Request,
+          amount: int = fastapi.Form(...),
+          name: str = fastapi.Form(...),
+          action: int = fastapi.Form(...)):
+    investment = next((item for item in main_user.investments if item.name==name),None)
+    if investment:
+        investment.buy(amount,investment.price)
+    else:
+        investment = Investment(name)
+        matches = Investment.search_investment(name)
+        investment_block = matches[0]
+        investment.buy(amount,investment_block.get("cancelNav",-1))
+        main_user.investments.append(investment)
+    new_trans = transaction(amount, "investment",action, datetime.date.today(), *util.get_jdate())
+    main_user.action(new_trans)
+    return fronts.TemplateResponse(
+        request,"setting.html", {"user": main_user, "error": error}
+    )   
 @app.post("/income")
 def income(request:fastapi.Request,
           amount: int = fastapi.Form(...),

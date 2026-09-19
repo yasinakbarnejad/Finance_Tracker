@@ -100,7 +100,8 @@ select {
 .investments{
     display: flex;
     flex-wrap: wrap;
-     gap: 16px;
+    gap: 16px;
+    background-color: white;
 }
 .card {
       border: 1px solid #ccc;

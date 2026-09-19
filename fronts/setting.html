@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block head %}        
+    <link rel="stylesheet" href="/static/report.css">
+    <title>
+        Setting
+    </title>
+{% endblock %}
+{% block content %}
+{% if user %}
+<div class="selection">
+    <form action="/save" method="post">
+    <div class="selector">
+    <span>
+        <label for="type">Choose the category's type </label><br>
+        <select id="type" name="type">
+            <option value="-1">expense</option>
+            <option value="1">income</option>
+        </select>
+        <label for="category">Enter new expense category</label>
+        <input type="text" name="category" id="category">
+    </span>
+    <input type="submit" value="Submit" id="button">
+    </div>
+    </form>
+</div>
+{% else %}
+    <p style="color: red;">you need to signin first</p>
+{% endif%}
+{%endblock%}

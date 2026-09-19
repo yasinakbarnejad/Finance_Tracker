@@ -40,7 +40,9 @@ class Investment:
 
         response = requests.post(url, headers=headers, json={"key": "value"})
         data = response.json()
-        with open("temp.json", "w") as f:
+        if response.status_code !=200:
+            return
+        with open("data/investment.json", "w") as f:
             json.dump(data,f,indent=4)
     @staticmethod
     def search_investment(name):
@@ -50,3 +52,4 @@ class Investment:
         return matches
     def find_price(self,price):
         self.price = round(price,1)
+Investment.fetch()
