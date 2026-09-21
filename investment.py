@@ -10,6 +10,7 @@ class Investment:
         self.value = value
         self.spent = spent
         self.name = name
+        self.price = 0
     def buy(self,stock, price):
         self.stocks += stock
         self.bought = True

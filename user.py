@@ -32,7 +32,7 @@ class User:
         else:
             self.Ecatagories.append(new_catagory)
     def action(self,new_action:transaction):
-        self.net_worth += new_action.type*new_action.amount
+        self.liquid += new_action.type*new_action.amount
         new_action.add_to_file(self.db_address)
         self.add_file()
     def login(self):
