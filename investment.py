@@ -4,18 +4,25 @@ from datetime import date
 class Investment:
 
     date = None
-    def __init__(self,name):
-        self.stocks = 0
-        self.bought = False
-        self.value = 0
-        self.spent = 0
+    def __init__(self,name,stocks=0,bought=False,value=0,spent=0,):
+        self.stocks = stocks
+        self.bought = bought
+        self.value = value
+        self.spent = spent
         self.name = name
     def buy(self,stock, price):
         self.stocks += stock
         self.bought = True
         self.spent+= price * stock
+        self.price = price
         self.calculate()
-    def calculate(self,new_spent):
+    def sell(self,stock,price):
+        self.stocks -= stock
+        if self.stocks==0:
+            self.bought=False
+        self.price = price
+        self.calculate()
+    def calculate(self):
         if self.price:
             self.value = self.stocks*self.price
             return  self.value - self.spent 
@@ -52,4 +59,10 @@ class Investment:
         return matches
     def find_price(self,price):
         self.price = round(price,1)
-Investment.fetch()
+    def to_dict(self):
+        return {"price":self.price,"name":self.name,"value":self.value,"spent":self.spent,
+                "stocks":self.stocks,"bought":self.bought}
+    @staticmethod
+    def read_dict(new_dict):
+        return Investment(new_dict["name"],new_dict["stocks"],new_dict["bought"],new_dict["value"],
+                          new_dict["spent"])

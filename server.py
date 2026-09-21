@@ -24,6 +24,9 @@ def home(request: fastapi.Request):
     })
 @app.get("/home")
 def main(request: fastapi.Request):
+    if main_user:
+        print(main_user.Ecatagories)
+        print(main_user.Icatagories)
     return fronts.TemplateResponse(request,"main.html",
     {
         "request" : request,
@@ -108,8 +111,9 @@ def search(
 @app.post("/save")
 def save(request:fastapi.Request,
           ctype: int = fastapi.Form(...),
-          catagory: str = fastapi.Form(...)):
-    main_user.add_catagory(catagory,ctype)
+          category: str = fastapi.Form(...)):
+    main_user.add_catagory(category,ctype)
+    main_user.add_file()
 @app.post("/trade")
 def trade(request:fastapi.Request,
           amount: int = fastapi.Form(...),
@@ -117,17 +121,30 @@ def trade(request:fastapi.Request,
           action: int = fastapi.Form(...)):
     investment = next((item for item in main_user.investments if item.name==name),None)
     if investment:
-        investment.buy(amount,investment.price)
+        if(action==1):
+            investment.buy(amount,investment.price)
+        elif (investment.stocks<amount):
+            return fronts.TemplateResponse(
+                request,"investment.html", {"user": main_user, "error": "not enough stocks"})
+        else:
+            investment.sell(amount,investment.price)
+    
     else:
         investment = Investment(name)
         matches = Investment.search_investment(name)
         investment_block = matches[0]
-        investment.buy(amount,investment_block.get("cancelNav",-1))
+        investment.find_price(investment_block.get("cancelNav",-1))
+        if(action==1):
+            investment.buy(amount,investment.price)
+        else:
+            return fronts.TemplateResponse(
+                request,"investment.html", {"user": main_user, "error": "not enough stocks"})
+              
         main_user.investments.append(investment)
-    new_trans = transaction(amount, "investment",action, datetime.date.today(), *util.get_jdate())
+    new_trans = transaction(amount*investment.price, "investment",-action, datetime.date.today(), *util.get_jdate())
     main_user.action(new_trans)
     return fronts.TemplateResponse(
-        request,"setting.html", {"user": main_user, "error": error}
+        request,"main.html", {"user": main_user, "error": ""}
     )   
 @app.post("/income")
 def income(request:fastapi.Request,

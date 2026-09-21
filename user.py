@@ -5,18 +5,19 @@ import report
 from investment import Investment
 class User:
     address = "data/users.json"
-    def __init__(self, first_name, last_name,username, password,net_worth):
+    def __init__(self, first_name, last_name,username, password,liquid,investments=None,Ecatagories=None,
+                 Icatagories=None):
         self.first = first_name
         self.last = last_name
         self.username = username
         self.password = password
-        self.liquid = net_worth
+        self.liquid = liquid
         self.net_worth = self.liquid
-        self.investments:list[Investment] = []
         self.last_login = date.today()
         self.db_address = f"data/trans/{self.username}_actions.csv"
-        self.Icatagories = ["dad allowance", "mom gift", "salary"]
-        self.Ecatagories = ["internet", "transportation"]
+        self.investments:list[Investment] = investments if investments is not None else []
+        self.Ecatagories = Ecatagories if Ecatagories is not None else ["internet", "transportation"]
+        self.Icatagories = Icatagories if Icatagories is not None else ["dad allowance", "mom gift", "salary"]
     def add_investment(self, new_investment:Investment):
         self.investments.append(new_investment)
     def check_investments(self):
@@ -56,13 +57,21 @@ class User:
             return User.read_dict(user)
     @staticmethod
     def read_dict(user_dict):
+        inves = User.read_investment_list(user_dict["investments"])
         new_user = User(user_dict["first_name"],user_dict["last_name"],user_dict["username"],
-                        user_dict["password"],user_dict["net_worth"])
+                        user_dict["password"],user_dict["liquid"],inves,
+                        user_dict["Ecatagories"],user_dict["Icatagories"])
         return new_user
-    
+    def investments_list(self):
+        return [investment.to_dict() for investment in self.investments]
+    @staticmethod
+    def read_investment_list(inv_li):
+        return [Investment.read_dict(inv) for inv in inv_li]
     def add_file(self):
+        investments = self.investments_list()
         new_user = {"first_name":self.first,"last_name":self.last,"username":self.username,
-                    "password":self.password, "net_worth":self.net_worth}
+                    "password":self.password,"Ecatagories":self.Ecatagories,
+                    "Icatagories":self.Icatagories,"investments":investments,"liquid":self.liquid}
         try:
             with open(User.address,"r") as f:
                 old_dict = json.load(f)
